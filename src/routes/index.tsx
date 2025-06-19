@@ -1,15 +1,23 @@
 import { Meta, Title } from "@solidjs/meta";
-import { A } from "@solidjs/router";
-import Counter from "~/components/Counter";
+
+import First from "~/components/index/First";
+import WhatIDo from "~/components/index/WhatIDo";
+import Wave from "~/components/index/Wave";
+import News from "~/components/index/News";
 
 export default function Home() {
   return (
-    <main class="text-center mx-auto p-10">
-      <Title>harvey-l.com - Work In Progress</Title>
-      <h1 class="text-3xl">Work In Progress!</h1>
-      <p class="text-xl mt-5">
-        Please checkout my old website <a href="https://www.lihe.dev/" class="color-sky">lihe.dev</a>
-      </p>
+    <main>
+      <Title>harvey-l.com - Home Page</Title>
+      <Meta name="description" content="Home Page" />
+      <Meta name="keywords" content="Home Page" />
+      <First />
+      {/* <BasicProfile /> */}
+      <WhatIDo />
+      <News />
+
+      <Wave class="bg-sky-9" />
     </main>
   );
 }
+

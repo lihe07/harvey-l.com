@@ -7,13 +7,19 @@
     "start": "vinxi start"
   },
   "dependencies": {
-    "@solidjs/meta": "^0.29.4",
-    "@solidjs/router": "^0.15.0",
-    "@solidjs/start": "^1.1.0",
-    "@unocss/reset": "^0.65.1",
-    "solid-js": "^1.9.5",
-    "unocss": "^0.65.1",
-    "vinxi": "^0.5.3"
+    "@iconify/json": "^2.2.350",
+    "@solidjs/meta": "^0.29",
+    "@solidjs/router": "^0.15",
+    "@solidjs/start": "^1.1",
+    "@unocss/preset-icons": "^66.2.3",
+    "@unocss/reset": "^66",
+    "animate.css": "^4.1.1",
+    "blaze-slider": "^1.9",
+    "katex": "^0.16",
+    "solid-js": "^1.9",
+    "solid-motionone": "^1.0.4",
+    "unocss": "^66",
+    "vinxi": "^0.5"
   },
   "engines": {
     "node": ">=22"
