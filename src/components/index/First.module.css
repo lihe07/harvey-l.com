@@ -1,0 +1,20 @@
+.readmore > svg {
+  transform: rotate(-90deg);
+}
+
+.readmore:hover > svg {
+  transform: rotate(0);
+}
+
+.contact > .first,
+.contact > .second {
+  transform: translateX(0);
+}
+
+.contact:hover > .first {
+  transform: translateX(5px);
+}
+
+.contact:hover > .second {
+  transform: translateX(-5px);
+}
