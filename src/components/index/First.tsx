@@ -94,7 +94,7 @@ const Right = () => {
 };
 export default () => {
   return (
-    <section class="h-screen w-full relative">
+    <section class="h-screen w-full relative overflow-hidden">
       <div
         class="absolute top-0 bottom-0 left-0 right-0 bg-center bg-cover
         animate__animated
