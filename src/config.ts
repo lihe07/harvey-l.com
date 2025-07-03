@@ -12,6 +12,7 @@ export const socials: { icon: string, href: string, hideInFirst?: boolean }[] = 
   {
     icon: twitter,
     href: "https://twitter.com/hli0407",
+    hideInFirst: true,
   },
   {
     icon: email,

@@ -4,7 +4,7 @@ import { A, useLocation, useNavigate } from "@solidjs/router";
 import avatar from "~/assets/images/avatar.115x115.webp";
 import { routes } from "~/config";
 
-export default (props) => {
+export default (props: { isDuringTransition: boolean }) => {
   const location = useLocation();
 
   const isIndex = () => location.pathname === "/";
@@ -22,15 +22,15 @@ export default (props) => {
   }
 
   const navigate = useNavigate();
-  function onMobileLinkClick(e) {
+  function onMobileLinkClick(e: MouseEvent) {
     // I am not on mobile
     if (!mobileNavOpen()) return;
 
     e.preventDefault();
-    const href = e.target.getAttribute("href");
+    const href = (e.target as HTMLAnchorElement).getAttribute("href");
 
     setMobileNavOpen(false);
-    setTimeout(() => navigate(href), 100);
+    href && setTimeout(() => navigate(href), 100);
   }
 
   return (
