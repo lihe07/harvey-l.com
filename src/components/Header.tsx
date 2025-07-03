@@ -57,7 +57,7 @@ export default (props: { isDuringTransition: boolean }) => {
             }}
             onClick={onMobileLinkClick}
           >
-            lihe.dev
+            harvey-l.com
           </A>
         </div>
         {/* Desktop Nav */}
