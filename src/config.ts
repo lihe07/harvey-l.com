@@ -4,6 +4,17 @@ import email from "./assets/icons/email.svg";
 // import qq from "./assets/icons/qq.svg";
 import instagram from "./assets/icons/instagram.svg";
 
+export interface Blog {
+  cover?: string,
+  wideCover?: string,
+  title: string,
+  tags: string[],
+  date?: string,
+  location: string,
+  href: string,
+  slug: string,
+}
+
 export const socials: { icon: string, href: string, hideInFirst?: boolean }[] = [
   {
     icon: github,
@@ -22,84 +33,89 @@ export const socials: { icon: string, href: string, hideInFirst?: boolean }[] = 
     icon: instagram,
     href: "https://www.instagram.com/hli0407"
   },
-  // {
-  //   icon: qq,
-  //   href: "tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=3525904273",
-  //   showInFirst: false,
-  // },
 ];
 
-export const footerLinks = [
-  {
-    name: "General",
-    // children: {
-    //   Works: "/works",
-    //   Blog: "/blog",
-    //   Contact: "/contact",
-    // },
-    children: [
-      {
-        name: "Home",
-        href: "/",
-      },
-      {
-        name: "Works",
-        href: "/works",
-      },
-      {
-        name: "Blog",
-        href: "/blog",
-      },
-      {
-        name: "Contact",
-        href: "/contact",
-      },
-    ],
-  },
-  {
-    name: "Details",
-    // children: {
-    //   Resume: "/resume",
-    //   About: "/about",
-    // },
+export const footerLinks: {
+  name: string;
+  children: ({
+    name: string;
+    href: string;
+    target?: string;
+  })[];
+}[] = [
+    {
+      name: "General",
+      children: [
+        {
+          name: "Home",
+          href: "/",
+        },
+        {
+          name: "Works",
+          href: "/works",
+        },
+        {
+          name: "Blog",
+          href: "/blog",
+        },
+        {
+          name: "Contact",
+          href: "/contact",
+        },
+      ],
+    },
+    {
+      name: "Details",
+      children: [
+        {
+          name: "Resume",
+          href: "/resume",
+        },
+        {
+          name: "About",
+          href: "/about",
+        },
+        {
+          name: "LinkedIn",
+          href: "https://www.linkedin.com/in/he-li-10827527b/",
+          target: "_blank",
+        }
+      ],
+    },
+    {
+      name: "Friends",
+      children: [
+        {
+          name: "Ziling's Blog",
+          href: "https://ziling.moe/",
+          target: "_blank",
+        },
+        {
+          name: "Lin's Blog",
+          href: "https://dreta.dev",
+          target: "_blank",
+        },
+        {
+          name: "¬(🐟∨🐱)",
+          href: "https://neitherfishnorcat.com/",
+          target: "_blank",
+        },
+        {
+          name: "Daniel & Toby",
+          href: "https://philochat.org/",
+          target: "_blank",
+        },
+      ],
+    },
+  ];
 
-    children: [
-      {
-        name: "Resume",
-        href: "/resume",
-      },
-      {
-        name: "About",
-        href: "/about",
-      },
-    ],
-  },
-  {
-    name: "Friends",
-    children: [
-      {
-        name: "Ziling's Blog",
-        href: "https://ziling.moe/",
-        target: "_blank",
-      },
-      {
-        name: "Lin's Blog",
-        href: "https://dreta.dev",
-        target: "_blank",
-      },
-      {
-        name: "¬(🐟∨🐱)",
-        href: "https://neitherfishnorcat.com/",
-        target: "_blank",
-      },
-      {
-        name: "Daniel & Toby",
-        href: "https://philochat.org/",
-        target: "_blank",
-      },
-    ],
-  },
-];
+export interface Tag {
+  name: string,
+  color: string,
+}
+
+type Tags = { [key: string]: Tag };
+
 export const tags = {
   tech: {
     name: "tech",
@@ -125,7 +141,7 @@ export const tags = {
     name: "other",
     color: "#374151", // gray-7
   },
-};
+} as Tags;
 
 export const routes = [
   {

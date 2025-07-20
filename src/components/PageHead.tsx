@@ -2,7 +2,7 @@ import defaultCover from "~/assets/images/cover.webp";
 import Section from "./Section";
 import { JSX, Show } from "solid-js";
 
-export default function PageHead(props: { cover?: string, title: string, description?: string, children: JSX.Element }) {
+export default function PageHead(props: { cover?: string, title: string, description?: string, children?: JSX.Element }) {
   return (
     <div class="relative">
       <img

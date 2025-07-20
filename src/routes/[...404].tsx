@@ -4,10 +4,10 @@ import { Title } from "@solidjs/meta";
 export default () => {
   return (
     <main>
-      <Title>lihe.dev - Not Found</Title>
+      <Title>harvey-l.com - Not Found</Title>
       <PageHead
         title="Nothing here"
-        description="This site might be under construction for a long while. Check back later!"
+        description="Work-in-Progress. Check back later!"
       />
     </main>
   );

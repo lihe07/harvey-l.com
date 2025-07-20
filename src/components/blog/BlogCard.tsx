@@ -1,15 +1,17 @@
 import { BlogDescription } from "~/components/blog/BlogDescription";
 import { A } from "@solidjs/router";
 import Tag from "~/components/blog/Tag";
+import { For } from "solid-js";
+import type { Blog } from "~/config";
 
-export default function Blog(props) {
+
+export default function Blog(props: { href: string, class?: string, key?: any } & Blog) {
   return (
     <div
       class={
         "flex md:flex-row md:h-60 h-unset flex-col color-white font-sans bg-zinc-8 rounded-2xl " +
         props.class || ""
       }
-      href={props.href}
     >
       <img
         src={props.cover}
@@ -31,7 +33,7 @@ export default function Blog(props) {
         </div>
 
         <p class="text-xl op-70 mt-3 md:line-clamp-1 line-clamp-5">
-          <BlogDescription {...props} />
+          <BlogDescription date={props.date} location={props.location} />
         </p>
       </div>
     </div>

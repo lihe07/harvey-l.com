@@ -2,7 +2,7 @@ import { Show } from "solid-js";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 
-export default (props) => {
+export default (props: { children: string, block?: boolean }) => {
   const rendered = () =>
     katex.renderToString(props.children.toString(), {
       displayMode: props.block,
