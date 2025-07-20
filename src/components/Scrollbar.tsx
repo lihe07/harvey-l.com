@@ -1,4 +1,4 @@
-import { createSignal, JSX, onMount } from "solid-js";
+import { createEffect, createSignal, JSX, onMount } from "solid-js";
 
 import style from "./Scrollbar.module.css";
 
@@ -14,9 +14,15 @@ export default (props: { children: JSX.Element, isDuringTransition: boolean }) =
 
   onMount(() => {
     ele.addEventListener("scroll", onScroll);
+    onScroll(); // Initial call to set the scrollbar position
     window.addEventListener("resize", onScroll);
     return () => window.removeEventListener("resize", onScroll);
   });
+
+  createEffect(() => {
+    if (!props.isDuringTransition)
+      onScroll();
+  })
 
   return (
     <div class="w-full h-screen relative">

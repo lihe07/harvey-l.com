@@ -4,7 +4,7 @@ import Section from "./Section";
 import avatar from "~/assets/images/avatar.115x115.webp";
 import { A } from "@solidjs/router";
 
-function Card(props) {
+function Card(props: { children: any }) {
   return (
     <div class="bg-black bg-op-50 rounded-xl py-7 md:px-10 px-5 flex-1">
       {props.children}
@@ -53,11 +53,11 @@ function Profile() {
         <br />
         Source available on Github:{" "}
         <a
-          href="https://github.com/lihe07/lihe.dev"
+          href="https://github.com/lihe07/harvey-l.com"
           class="color-white"
           target="_blank"
         >
-          lihe07/lihe.dev
+          lihe07/harvey-l.com
         </a>
         <br />
         Thanks for visiting {"(>▽<)!"}

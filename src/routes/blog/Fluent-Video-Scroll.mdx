@@ -1,0 +1,110 @@
+```meta
+title: Smoothly Scrollable Videos for Web
+cover: https://lms.d.zhan.com/zhanlms/addon_homework/2024/11/1688396730b4a059ec3/kvblurred.webp
+wideCover: https://lms.d.zhan.com/zhanlms/addon_homework/2024/11/1688396730b4a059ec3/kvblurred.webp
+date: 2023-10-31
+location: Beijing
+tags: [tech]
+```
+
+import { onMount } from "solid-js";
+
+## TL; DR
+
+- You need more **keyframes**.
+- At the cost of increasing video size.
+
+## Introduction
+
+Scrollable videos are normal muted videos that play forwards and backwards as user scrolling the page. Complex animations, 3D transitions for example, are usually hard to implement with pure JavaScript but relatively easy with video creation softwares and dedicated 3D softwares like Adobe AE and Blender. As a solution, scrollable videos could be applied to create complex while interactive animations in your web page.
+
+Apple has many good examples in their product pages. For example their page for [Airpods 2](https://www.apple.com/airpods-pro/).
+
+![Airpods](https://lms.d.zhan.com/zhanlms/addon_homework/2023/10/11238696540efea02daf/apple.gif)
+
+## Implementation
+
+The script to implement this effect is relatively straightforward:
+
+```js
+let video = document.getElementById("video");
+
+function play() {
+  let time = (window.scrollY / window.scrollMaxY) * video.duration;
+  video.currentTime = time;
+  requestAnimationFrame(play);
+}
+
+play();
+```
+
+and the HTML:
+
+```html
+<video id="video" src="<SOURCE>" style="" />
+```
+
+## The Problem
+
+If you try to use a normal video, the playback would be extremely choppy.
+
+For example, the following video comes from MDN doc for HTML5 video element:
+
+export const Vid = (props) => {
+  let video;
+  function play() {
+    // Check if video is fully loaded
+    if (!(video.duration > 0)) {
+      setTimeout(play, 500);
+      return;
+    }
+
+    let s = document.getElementById("scroll");
+    let scrollPercent = s.scrollTop / s.scrollTopMax;
+    var frameNumber = scrollPercent * video.duration;
+    video.currentTime = frameNumber;
+    if (props.useAnimationFrame) requestAnimationFrame(play);
+    else setTimeout(play, 500);
+
+}
+onMount(() => play());
+return <div style="height: 300vh;">
+
+  <video ref={video} src={props.src} class="rounded-xl" style="max-width: 100%; width: 100%; position: sticky; top: 5rem;"></video>
+</div>;
+};
+
+<Vid src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" />
+
+Simply put, this is intended behavior, as the video is not designed to be played in this way.
+
+## Keyframes
+
+mp4 and webm videos are designed to be played in a linear fashion.
+
+In order to save space, the video is encoded with keyframes. The frames in between keyframes are encoded as the difference between the keyframes.
+When you seek to a point in the video, the player must decode the keyframe and all the frames in between to get to the point you want to watch.
+
+In order to make the video scroll smoothly, you need to add more keyframes (which will increase the size of the video).
+
+With ffmpeg, you can achieve this with the following command:
+
+```bash
+ffmpeg -i <INPUT> -c:v libx264 -x264-params keyint=15 <OUTPUT>
+```
+
+In which `keyint` is the number of frames between keyframes. The lower the number, the more keyframes you will have.
+
+For example, with `keyint=1`, the above example now scrolls smoothly:
+
+<Vid
+  src="https://lms.d.zhan.com/zhanlms/addon_homework/2024/11/2142295672f35e7aab4f/out.mp4"
+  useAnimationFrame
+/>
+
+## See Also
+
+- [ScrollyVideo.js](https://scrollyvideo.js.org/)
+- [Stack Overflow Question](https://stackoverflow.com/questions/51371160/how-to-use-ffmpeg-to-make-an-html5-webm-video-scroll-smoothly)
+- [Video Help Thread](https://forum.videohelp.com/threads/389787-Using-ffmpeg-to-make-an-html5-webm-video-scroll-smoothly)
+- [Codepen Example](https://codepen.io/marduklien/pen/MdvdEG)

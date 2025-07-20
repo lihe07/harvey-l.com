@@ -12,7 +12,6 @@ export default function Home() {
       <Meta name="description" content="Home Page" />
       <Meta name="keywords" content="Home Page" />
       <First />
-      {/* <BasicProfile /> */}
       <WhatIDo />
       <News />
 

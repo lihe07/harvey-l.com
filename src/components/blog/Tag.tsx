@@ -2,7 +2,7 @@ import { A } from "@solidjs/router";
 
 import { tags } from "~/config";
 
-export default function Tag(props) {
+export default function Tag(props: { id: string, class?: string }) {
   const tag = () => tags[props.id];
   return (
     <A
