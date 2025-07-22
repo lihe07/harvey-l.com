@@ -77,7 +77,7 @@ export const footerLinks: {
         },
         {
           name: "LinkedIn",
-          href: "https://www.linkedin.com/in/he-li-10827527b/",
+          href: "https://www.linkedin.com/in/hli0407",
           target: "_blank",
         }
       ],
