@@ -11,7 +11,7 @@ export default function PageHead(props: { cover?: string, title: string, descrip
         class="w-full h-full object-cover absolute z-1 top-0 left-0"
       />
       <div
-        class={"relative top-0 bg-black/50 z-2 w-full pt-5 pb-10"}
+        class={"relative top-0 bg-black/60 z-2 w-full pt-5 pb-10"}
       >
         <Section class="sm:mt-33 mt-25">
           <h1 class="font-serif !leading-snug md:text-6xl sm:text-5xl text-4xl font-light">

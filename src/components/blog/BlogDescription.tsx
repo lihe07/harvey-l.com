@@ -1,21 +1,5 @@
 import { Show } from "solid-js";
 
-const abbr = ["st", "nd", "rd", "th"];
-export const months = [
-  "Janurary",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "Auguest",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 function formatRelativeTime(date: Date): string {
   const now = new Date();
   const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -27,14 +11,8 @@ function formatRelativeTime(date: Date): string {
   const months = Math.floor(days / 30.436875); // Average days in a month
   const years = Math.floor(days / 365.25); // Average days in a year
 
-  if (seconds < 30) {
-    return "Just now";
-  } else if (seconds < 60) {
-    return `${seconds} seconds ago`;
-  } else if (minutes < 60) {
-    return `${minutes} minutes ago`;
-  } else if (hours < 24) {
-    return `${hours} hours ago`;
+  if (days < 1) {
+    return "Today";
   } else if (days < 7) {
     return `${days} days ago`;
   } else if (weeks < 4) {
