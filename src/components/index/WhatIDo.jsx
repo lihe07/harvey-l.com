@@ -1,4 +1,4 @@
-import BlazeSlider from "~/assets/scripts/BlazeSlider";
+import BlazeSlider from "blaze-slider";
 import "blaze-slider/dist/blaze.css";
 
 import "~/assets/styles/swiper.css";
