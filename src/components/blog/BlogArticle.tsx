@@ -12,7 +12,7 @@ export default (props: Blog & { children: JSX.Element }) => {
         <p class="op-70 text-xl font-sans my-3">
           <BlogDescription {...props} />
         </p>
-        <div class="flex">
+        <div class="flex gap-2 ">
           <For each={props.tags || []}>{(e) => <Tag id={e} />}</For>
         </div>
       </PageHead>

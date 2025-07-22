@@ -30,6 +30,12 @@ export function listBlog() {
     } as Blog);
   }
 
+  // Sort by date
+  blogMeta.sort((a, b) => {
+    if (!a.date || !b.date) return 0; // If date is not defined, do not sort
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  })
+
   return blogMeta
 
 }

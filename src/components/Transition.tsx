@@ -21,6 +21,7 @@ function trimPathname(s: any): string {
 }
 export default function Transition(props: { children: JSX.Element, onTransition: CallableFunction }) {
   const [show, setShow] = createSignal(false);
+  const [duration, setDuration] = createSignal(300);
 
   const isRouting = useIsRouting();
   createEffect(() => {
@@ -29,19 +30,27 @@ export default function Transition(props: { children: JSX.Element, onTransition:
       setTimeout(() => {
         props.onTransition(false);
         setShow(true);
-      }, 500);
+      }, duration() + 50);
     }
   });
 
   useBeforeLeave((e) => {
-    setShow(false);
-    e.preventDefault();
-    props.onTransition(true);
-
     const fromPath = trimPathname(e.from.pathname);
     const toPath = trimPathname(e.to);
 
     console.log(`Transition: Navigating from ${fromPath} to ${toPath}`);
+
+    // if (fromPath === toPath) {
+    //   // Same page navigation. Quick transition
+    //   setDuration(150);
+    // } else {
+    //   setDuration(300);
+    // }
+
+    setShow(false);
+    e.preventDefault();
+    props.onTransition(true);
+
 
     setTimeout(() => {
       if (fromPath !== toPath) {
@@ -52,14 +61,17 @@ export default function Transition(props: { children: JSX.Element, onTransition:
       }
 
       e.retry(true);
-    }, 300);
+    }, duration());
   });
 
   return (
     <div
-      style="opacity: 0; transform: scale(1.01)"
-      class="transition-all-300"
-      classList={{ "!op-100 !scale-100": show() }}
+      class="transition-all"
+      style={{
+        "opacity": show() ? 1 : 0,
+        "transform": show() ? "scale(1)" : "scale(1.01)",
+        "transition-duration": `${duration()}ms`,
+      }}
     >
       {props.children}
     </div>

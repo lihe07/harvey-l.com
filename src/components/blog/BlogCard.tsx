@@ -28,7 +28,7 @@ export default function Blog(props: { href: string, class?: string, key?: any } 
           </A>
         </h2>
 
-        <div class="flex">
+        <div class="flex gap-2">
           <For each={props.tags}>{(e) => <Tag id={e} />}</For>
         </div>
 
