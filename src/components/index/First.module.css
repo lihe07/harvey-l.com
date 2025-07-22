@@ -2,7 +2,7 @@
   transform: rotate(-90deg);
 }
 
-.readmore:hover > svg {
+.readmore:hover > svg, .readmore:focus > svg {
   transform: rotate(0);
 }
 
@@ -11,10 +11,25 @@
   transform: translateX(0);
 }
 
-.contact:hover > .first {
+.contact:hover > .first, .contact:focus > .first {
   transform: translateX(5px);
 }
 
-.contact:hover > .second {
+.contact:hover > .second, .contact:focus > .second {
   transform: translateX(-5px);
+}
+
+@font-face {
+  font-family: 'Roboto Slab';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(~/assets/fonts/Roboto Slab.woff2) format('woff2');
+}
+
+.roboto {
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
 }

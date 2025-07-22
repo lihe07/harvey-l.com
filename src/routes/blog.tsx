@@ -8,14 +8,12 @@ export default function Blog(props: { children: JSX.Element }) {
   const location = useLocation();
 
   return (
-    <div>
-      <Show
-        when={location.pathname !== "/blog" && location.pathname !== "/blog/"}
-        fallback={props.children}
-      >
-        <BlogLayout>{props.children}</BlogLayout>
-      </Show>
-    </div>
+    <Show
+      when={location.pathname !== "/blog" && location.pathname !== "/blog/"}
+      fallback={props.children}
+    >
+      <BlogLayout>{props.children}</BlogLayout>
+    </Show>
   );
 }
 
