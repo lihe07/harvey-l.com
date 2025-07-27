@@ -1,12 +1,11 @@
-import { For } from "solid-js";
+import { createSignal, For, onMount } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 
 import Button from "./Button";
 import style from "./First.module.css";
 import "animate.css";
 
-import bg from "~/assets/images/bg.webp";
-import { socials } from "~/config";
+import { socials, firstBgs } from "~/config";
 
 const Left = () => {
   const navigate = useNavigate();
@@ -93,6 +92,14 @@ const Right = () => {
   );
 };
 export default () => {
+
+  const [bg, setBg] = createSignal(firstBgs[0]);
+
+  onMount(() => {
+    setBg(firstBgs[Math.floor(Math.random() * firstBgs.length)]);
+  })
+
+
   return (
     <section class="h-screen w-full relative overflow-hidden">
       <div
@@ -100,7 +107,7 @@ export default () => {
         animate__animated
         animate__pulse
         animate__infinite"
-        style={{ "background-image": `url(${bg})`, "--animate-duration": "10s", "--animate-delay": "1s" }}
+        style={{ "background-image": `url(${bg()})`, "--animate-duration": "10s", "--animate-delay": "1s" }}
       ></div>
       <div class="h-full w-full backdrop-blur bg-black bg-op-50 flex items-center px-10 box-border">
         <div class="max-w-300 ma w-full flex justify-between">

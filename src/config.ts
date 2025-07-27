@@ -4,6 +4,14 @@ import email from "./assets/icons/email.svg";
 // import qq from "./assets/icons/qq.svg";
 import instagram from "./assets/icons/instagram.svg";
 
+import bg1 from "./assets/images/first/bg.webp";
+import bg2 from "./assets/images/first/atl.webp";
+
+export const firstBgs = [
+  bg1,
+  bg2
+]
+
 export interface Blog {
   cover?: string,
   wideCover?: string,

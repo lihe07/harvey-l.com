@@ -206,7 +206,7 @@ export default () => {
           </p>
         </div>
 
-        <div class="blaze-slider pt-30 pb-50 md:px-5 px-0" id="cards-slider">
+        <div class="blaze-slider sm:pt-30 pt-15 sm:pb-50 pb-30 md:px-5 px-0" id="cards-slider">
           <div class="blaze-container">
             <div class="blaze-container">
               <div class="blaze-track-container">
