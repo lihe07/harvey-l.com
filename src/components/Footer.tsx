@@ -26,6 +26,15 @@ function Socials() {
   );
 }
 
+function ExternalLink(props: { href: string; children: any; }) {
+  return (
+    <a href={props.href} target="_blank" rel="noreferrer" class="hover:op-70 focus:op-70 transition active:op-50 font-italic">
+      {props.children}
+    </a>
+  )
+}
+
+
 function Profile() {
   return (
     <div>
@@ -39,26 +48,22 @@ function Profile() {
       </div>
       <p class="op-70 font-sans leading-loose text-lg mt-3">
         Made with{" "}
-        <a
+        <ExternalLink
           href="https://start.solidjs.com/"
-          class="color-white"
-          target="_blank"
         >
           SolidStart
-        </a>
+        </ExternalLink>
         {" and "}
-        <a href="https://unocss.dev/" class="color-white" target="_blank">
+        <ExternalLink href="https://unocss.dev/">
           UnoCSS
-        </a>
+        </ExternalLink>
         <br />
         Source available on Github:{" "}
-        <a
+        <ExternalLink
           href="https://github.com/lihe07/harvey-l.com"
-          class="color-white"
-          target="_blank"
         >
           lihe07/harvey-l.com
-        </a>
+        </ExternalLink>
         <br />
         Thanks for visiting {"(>▽<)!"}
       </p>

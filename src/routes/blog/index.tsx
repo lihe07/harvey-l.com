@@ -8,6 +8,7 @@ import BlogCard from "~/components/blog/BlogCard";
 import { A, createAsync, useLocation } from "@solidjs/router";
 import Tag from "~/components/blog/Tag";
 import { listBlogQuery } from "~/server";
+import cover from "~/assets/images/cover-blog.webp";
 
 export const route = {
   preload: () => listBlogQuery(),
@@ -38,6 +39,7 @@ export default () => {
       <PageHead
         // title={tag() ? "My Blog (filtered)" : "My Blog"}
         title={"My Blog"}
+        cover={cover}
         description={
           tag()
             ? `Here displayed my posts with tag "${tag()}". Click the title to navigate.`
