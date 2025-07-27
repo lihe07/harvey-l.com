@@ -13,7 +13,7 @@ export default function News() {
   const blog = createAsync(() => listBlogQuery())
 
   return (
-    <div class="w-full bg-sky-9 pt-20 md:pb-15 sm:pb-40 pb-30">
+    <div class="w-full bg-sky-9 sm:pt-20 pt-10 md:pb-15 sm:pb-40 pb-30">
       <Section>
         <h1 class="md:text-15 font-serif font-bold text-10 flex justify-between md:flex-row flex-col my-10">
           Recent Updates
