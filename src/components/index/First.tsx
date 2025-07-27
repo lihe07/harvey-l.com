@@ -13,7 +13,7 @@ const Left = () => {
   return (
     <div>
       <p class="font-sans op-60 sm:text-7 text-5 mt-3 sm:mb-5 mb-3">Hello!!</p>
-      <p class="font-serif md:text-13 sm:text-10 text-9 mb-10 mr-7 leading-snug">
+      <p class="font-serif md:text-13 sm:text-10 text-8 mb-10 mr-7 leading-snug">
         I'm <i>Harvey Li</i>, a CS undergrad<br />
         at <a href="https://www.gatech.edu/" target="_blank" class={"focus:op-85 hover:op-85 inline-block active:scale-98 transition " + style.roboto}>Georgia Tech</a>
       </p>

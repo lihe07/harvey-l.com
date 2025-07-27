@@ -5,8 +5,9 @@ import pkg from "@vinxi/plugin-mdx";
 const { default: mdx } = pkg;
 
 import rehypeKatex from "rehype-katex";
-import remarkMath from "remark-math";
 import rehypeHighlight from "rehype-highlight";
+import rehypeExternalLinks from "rehype-external-links";
+import remarkMath from "remark-math";
 
 export default defineConfig({
   extensions: ["mdx", "md"],
@@ -16,7 +17,11 @@ export default defineConfig({
         jsx: true,
         jsxImportSource: "solid-js",
         providerImportSource: "solid-mdx",
-        rehypePlugins: [rehypeHighlight, () => rehypeKatex({ output: "html" })],
+        rehypePlugins: [
+          rehypeHighlight,
+          () => rehypeKatex({ output: "html" }),
+          () => rehypeExternalLinks({ rel: "noopener", target: "_blank" })
+        ],
         remarkPlugins: [remarkMath],
       }),
       UnoCSS()
