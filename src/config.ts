@@ -94,6 +94,11 @@ export const footerLinks: {
       name: "Friends",
       children: [
         {
+          name: "Keijay Huang",
+          href: "https://keijay.me/",
+          target: "_blank",
+        },
+        {
           name: "Ziling's Blog",
           href: "https://ziling.moe/",
           target: "_blank",
@@ -106,11 +111,6 @@ export const footerLinks: {
         {
           name: "¬(🐟∨🐱)",
           href: "https://neitherfishnorcat.com/",
-          target: "_blank",
-        },
-        {
-          name: "Daniel & Toby",
-          href: "https://philochat.org/",
           target: "_blank",
         },
       ],
@@ -144,6 +144,14 @@ export const tags = {
   re: {
     name: "RE",
     color: "#be123c", // rose-7
+  },
+  android: {
+    name: "android",
+    color: "#a21caf", // purple-7
+  },
+  web: {
+    name: "web",
+    color: "#d97706", // amber-7
   },
   other: {
     name: "other",
