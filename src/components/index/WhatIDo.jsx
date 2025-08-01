@@ -16,6 +16,7 @@ import numpy from "~/assets/icons/numpy.svg";
 import rust from "~/assets/icons/rust.png";
 
 import phenyl from "~/assets/images/phenyl.webp";
+import { Motion } from "solid-motionone";
 
 const icons = [
   {
@@ -196,17 +197,31 @@ export default () => {
     <section class="bg-zinc-9">
       <Section class="w-full">
         <div class="tracking-wide text-center pt-20">
-          <h1 class="font-sans md:text-15 text-10 font-light mt-0 mb-3">
+          <Motion.h1 class="font-sans md:text-15 text-10 font-light mt-0 mb-3"
+            initial={{ opacity: 0, y: -20 }}
+            inView={{ opacity: 1, y: 0 }}
+            inViewOptions={{ amount: 1 }}
+            transition={{ duration: 0.3 }}
+          >
             Concentrations
-          </h1>
-          <p class="ma op-80 font-sans text-2xl m0 md:max-w-unset leading-relaxed max-w-70">
+          </Motion.h1>
+          <Motion.p class="ma op-80 font-sans text-2xl m0 md:max-w-unset leading-relaxed max-w-70"
+            initial={{ opacity: 0, y: 30 }}
+            inView={{ opacity: 0.8, y: 0 }}
+            inViewOptions={{ amount: 1 }}
+          >
             I am active in the following areas.
             <br />
             Click on the tags to explore more!
-          </p>
+          </Motion.p>
         </div>
 
-        <div class="blaze-slider sm:pt-30 pt-15 sm:pb-50 pb-30 md:px-5 px-0" id="cards-slider">
+        <Motion.div class="blaze-slider sm:pt-30 pt-15 sm:pb-50 pb-30 md:px-5 px-0" id="cards-slider"
+          initial={{ opacity: 0, y: 30 }}
+          inView={{ opacity: 1, y: 0 }}
+          inViewOptions={{ amount: 0.3 }}
+          transition={{ duration: 0.3 }}
+        >
           <div class="blaze-container">
             <div class="blaze-container">
               <div class="blaze-track-container">
@@ -255,7 +270,7 @@ export default () => {
 
             </div>
           </div>
-        </div>
+        </Motion.div>
       </Section>
     </section>
   );
