@@ -77,7 +77,8 @@ export const footerLinks: {
       children: [
         {
           name: "Resume",
-          href: "/resume",
+          href: "/resume.pdf",
+          target: "_blank",
         },
         {
           name: "About",
@@ -111,7 +112,7 @@ export const footerLinks: {
         {
           name: "¬(🐟∨🐱)",
           href: "https://neitherfishnorcat.com/",
-          target: "_blank",
+          target: "_blank"
         },
       ],
     },
