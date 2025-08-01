@@ -1,0 +1,96 @@
+```meta
+title: Resolving Android JNI Native Methods Dynamically with Frida
+date: 2025-08-01
+location: Atlanta
+tags: 
+  - re
+  - tech
+  - android
+cover: https://codeshare.frida.re/static/images/logo.png
+```
+
+## Introduction
+
+On Android, security critical logics are typically implemented in native code, which can be protected by binary packers such as _CrackProof_, _Promon SHIELD_, _SecNeo AppShield_, etc. These packers often obfuscate the exports of native libraryes, making it difficult to locate the native methods that need to be analyzed.
+
+In this article, we will explore how to dynamically resolve JNI native methods on [Android Runtime (ART)](https://source.android.com/docs/core/runtime) using [Frida](https://frida.re/), a powerful dynamic instrumentation toolkit.
+
+## Requirements
+
+- [Frida v16.x](https://frida.re/)
+- Android Device/Emulator with ART (Android 5.0+)
+- Obfuscated Android App
+
+## JNI_OnLoad
+
+When Android loads a native library (triggered by `System.loadLibrary()`), it calls the `JNI_OnLoad` function if it is defined. Packers often implement native function registration in this function.
+
+An example of a `JNI_OnLoad` function is as follows:
+
+```c
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
+    JNIEnv *env;
+    if ((*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_6) != JNI_OK) {
+        return -1;
+    }
+
+    jclass clazz = (*env)->FindClass(env, "com/example/MyNativeClass");
+    if (clazz == NULL) {
+        return -1;
+    }
+
+    JNINativeMethod methods[] = {
+        {"nativeMethod", "(I)V", (void*)nativeMethodImpl},
+        // Add more methods as needed
+    };
+
+    if ((*env)->RegisterNatives(env, clazz, methods, sizeof(methods)/sizeof(methods[0])) < 0) {
+        return -1;
+    }
+
+    return JNI_VERSION_1_6;
+}
+```
+
+In reality, this function is often heavily obfuscated, along with `JNINativeMethod` structures and method names.
+
+__If we can dynamically locate the native methods in the DRAM, we can bypass the obfuscation and directly dump them.__
+
+## Dive into ART
+
+The native registration process in ART starts with the call to `RegisterNatives`. Searching for it in the ART source code reveals that it is implemented in `runtime/jni_internal.cc`:
+
+```cpp
+static jint RegisterNatives(JNIEnv* env,
+                              jclass java_class,
+                              const JNINativeMethod* methods,
+                              jint method_count) {
+    // ... sanity checks and other setup code ...
+    for (jint i = 0; i < method_count; ++i) {
+        // ...
+        ArtMethod* m = FindMethod<true>(current_class.Ptr(), name, sig);
+        // ...
+        const void* final_function_ptr = m->RegisterNative(fnPtr);
+        // ...
+    }
+}
+```
+
+Further, `ArtMethod::RegisterNative` is defined in `runtime/art_method.cc`:
+
+```cpp
+const void* ArtMethod::RegisterNative(const void* native_method) {
+    CHECK(IsNative()) << PrettyMethod();
+    CHECK(native_method != nullptr) << PrettyMethod();
+    void* new_native_method = nullptr;
+    Runtime::Current()->GetRuntimeCallbacks()->RegisterNativeMethod(this,
+                                                                  native_method,
+                                                                  /*out*/&new_native_method);
+    SetEntryPointFromJni(new_native_method); // Set the EntryPoint field
+    return new_native_method;
+}
+```
+
+From this, we can see that the location of the native method is stored in the `EntryPoint` field of the `ArtMethod` object.
+
+## Frida Implementation

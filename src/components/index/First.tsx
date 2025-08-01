@@ -3,22 +3,36 @@ import { useNavigate } from "@solidjs/router";
 
 import Button from "./Button";
 import style from "./First.module.css";
-import "animate.css";
 
 import { socials, firstBgs } from "~/config";
+import { Motion } from "solid-motionone";
 
 const Left = () => {
   const navigate = useNavigate();
   return (
     <div>
-      <p class="font-sans op-60 sm:text-7 text-5 mt-3 sm:mb-5 mb-3">Hello!!</p>
-      <p class="font-serif md:text-13 sm:text-10 text-8 mb-10 mr-7 leading-snug">
+      <Motion.p class="font-sans sm:text-7 text-5 mt-3 sm:mb-5 mb-3"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 0.6, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
+        Hello!!
+      </Motion.p>
+      <Motion.p class="font-serif md:text-13 sm:text-10 text-8 mb-10 mr-7 leading-snug"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
+      >
         I'm <i>Harvey Li</i>, a CS undergrad<br />
         at <a href="https://www.gatech.edu/" target="_blank" class={"focus:op-85 hover:op-85 inline-block active:scale-98 transition " + style.roboto}>Georgia Tech</a>
-      </p>
+      </Motion.p>
 
       {/* Buttons */}
-      <div class="flex font-sans items-center absolute sm:mr-10 mr-0 sm:gap-5 gap-3">
+      <Motion.div class="flex font-sans items-center absolute sm:mr-10 mr-0 sm:gap-5 gap-3"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.8 }}
+      >
         <Button
           onClick={() => {
             document.getElementById("scroll")?.scrollTo({
@@ -69,7 +83,7 @@ const Left = () => {
           </svg>
           Contact
         </Button>
-      </div>
+      </Motion.div>
     </div>
   );
 };
@@ -78,14 +92,20 @@ const Right = () => {
   return (
     <div class="flex flex-col items-center justify-center">
       <For each={socials.filter((e) => !e.hideInFirst)}>
-        {(social) => (
-          <a
-            href={social.href}
-            target="_blank"
-            class="bg-white bg-op-30 rounded-50% h-12 w-12 block flex items-center justify-center op-70 hover:op-100 active:scale-90 transition m-y-3"
+        {(social, i) => (
+          <Motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 + i() * 0.1 }}
           >
-            <img width="28" height="28" src={social.icon} alt={social.href} />
-          </a>
+            <a
+              href={social.href}
+              target="_blank"
+              class="bg-white bg-op-30 rounded-50% h-12 w-12 block flex items-center justify-center op-70 hover:op-100 active:scale-90 transition m-y-3"
+            >
+              <img width="28" height="28" src={social.icon} alt={social.href} />
+            </a>
+          </Motion.div>
         )}
       </For>
     </div>
@@ -102,13 +122,21 @@ export default () => {
 
   return (
     <section class="h-screen w-full relative overflow-hidden">
-      <div
-        class="absolute top-0 bottom-0 left-0 right-0 bg-center bg-cover
-        animate__animated
-        animate__pulse
-        animate__infinite"
-        style={{ "background-image": `url(${bg()})`, "--animate-duration": "10s", "--animate-delay": "1s" }}
-      ></div>
+      <Motion.div
+        class="absolute top-0 bottom-0 left-0 right-0 bg-center bg-cover"
+        style={{ "background-image": `url(${bg()})` }}
+        animate={{
+          scale: [1, 1.05, 1],
+          opacity: [0.8, 1, 0.8],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          easing: "linear",
+        }}
+
+
+      ></Motion.div>
       <div class="h-full w-full backdrop-blur bg-black bg-op-50 flex items-center px-10 box-border">
         <div class="max-w-300 ma w-full flex justify-between">
           {/* Left */}

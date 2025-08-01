@@ -3,15 +3,21 @@ import { A } from "@solidjs/router";
 import Tag from "~/components/blog/Tag";
 import { For } from "solid-js";
 import type { Blog } from "~/config";
+import { Motion } from "solid-motionone";
 
 
 export default function Blog(props: { href: string, class?: string, key?: any } & Blog) {
   return (
-    <div
+    <Motion.div
       class={
         "flex md:flex-row md:h-60 h-unset flex-col color-white font-sans bg-zinc-8 rounded-2xl " +
         props.class || ""
       }
+
+      initial={{ opacity: 0, y: 20 }}
+      inView={{ opacity: 1, y: 0 }}
+      inViewOptions={{ once: true, amount: 0.8 }}
+      transition={{ duration: 0.3 }}
     >
       <img
         src={props.cover}
@@ -36,6 +42,6 @@ export default function Blog(props: { href: string, class?: string, key?: any } 
           <BlogDescription date={props.date} location={props.location} />
         </p>
       </div>
-    </div>
+    </Motion.div>
   );
 }
