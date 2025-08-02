@@ -112,21 +112,29 @@ const Right = () => {
   );
 };
 export default () => {
+  const [bg, setBg] = createSignal(-1);
 
-  const [bg, setBg] = createSignal(firstBgs[0]);
+  let interval: NodeJS.Timeout;
+
 
   onMount(() => {
-    setBg(firstBgs[Math.floor(Math.random() * firstBgs.length)]);
+    setTimeout(() => setBg(0), 1000);
+
+
+    interval = setInterval(() => {
+      setBg((bg() + 1) % firstBgs.length);
+    }, 10 * 1000)
+
+    return () => clearInterval(interval);
   })
 
 
   return (
     <section class="h-screen w-full relative overflow-hidden">
       <Motion.div
-        class="absolute top-0 bottom-0 left-0 right-0 bg-center bg-cover"
-        style={{ "background-image": `url(${bg()})` }}
+        class="absolute top-0 bottom-0 left-0 right-0"
         animate={{
-          scale: [1, 1.05, 1],
+          scale: [1, 1.1, 1],
           opacity: [0.8, 1, 0.8],
         }}
         transition={{
@@ -134,9 +142,19 @@ export default () => {
           repeat: Infinity,
           easing: "linear",
         }}
+      >
+        <For each={firstBgs}>
+          {(src, index) => (
+            <img src={src} class="absolute top-0 left-0 w-screen h-screen object-cover transition duration-2000" alt="background"
+              classList={{
+                "op-0": index() !== bg(),
+                "op-100": index() === bg(),
+              }}
+            />
+          )}
+        </For>
 
-
-      ></Motion.div>
+      </Motion.div>
       <div class="h-full w-full backdrop-blur bg-black bg-op-50 flex items-center px-10 box-border">
         <div class="max-w-300 ma w-full flex justify-between">
           {/* Left */}
