@@ -6,6 +6,7 @@ import style from "./First.module.css";
 
 import { socials, firstBgs } from "~/config";
 import { Motion } from "solid-motionone";
+import { Link } from "@solidjs/meta";
 
 const Left = () => {
   const navigate = useNavigate();
@@ -145,12 +146,16 @@ export default () => {
       >
         <For each={firstBgs}>
           {(src, index) => (
-            <img src={src} class="absolute top-0 left-0 w-screen h-screen object-cover transition duration-2000" alt="background"
-              classList={{
-                "op-0": index() !== bg(),
-                "op-100": index() === bg(),
-              }}
-            />
+            <>
+              <Link rel="preload" as="image" href={src} />
+              <img src={src} class="absolute top-0 left-0 w-screen h-screen object-cover transition duration-2000" alt="background"
+                classList={{
+                  "op-0": index() !== bg(),
+                  "op-100": index() === bg(),
+                }}
+              >
+              </img>
+            </>
           )}
         </For>
 
