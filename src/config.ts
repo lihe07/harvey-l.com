@@ -4,12 +4,18 @@ import email from "./assets/icons/email.svg";
 // import qq from "./assets/icons/qq.svg";
 import instagram from "./assets/icons/instagram.svg";
 
-import bg1 from "./assets/images/first/bg.webp";
+import bg1 from "./assets/images/first/bg3.webp";
 import bg2 from "./assets/images/first/atl.webp";
+import bg3 from "./assets/images/first/bg2.webp";
+import bg4 from "./assets/images/first/bg1.webp";
+
+
 
 export const firstBgs = [
   bg1,
-  bg2
+  bg2,
+  bg3,
+  bg4,
 ]
 
 export interface Blog {
