@@ -168,16 +168,21 @@ export const tags = {
 
 export const routes = [
   {
-    name: "Works",
-    path: "/works",
+    name: "About",
+    path: "/about",
+  },
+  {
+    name: "ENGL1101",
+    path: "/engl",
   },
   {
     name: "Blog",
     path: "/blog",
   },
   {
-    name: "Contact",
-    path: "/contact",
-  },
+    name: "Works",
+    path: "/works",
+    mobileOnly: true, // Only show in mobile nav
+  }
 ];
 

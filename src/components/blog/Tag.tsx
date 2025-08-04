@@ -3,7 +3,7 @@ import { A } from "@solidjs/router";
 import { tags } from "~/config";
 
 export default function Tag(props: { id: string, class?: string }) {
-  const tag = () => tags[props.id];
+  const tag = () => tags[props.id] || { name: props.id, color: "#000000" };
   return (
     <A
       class={
