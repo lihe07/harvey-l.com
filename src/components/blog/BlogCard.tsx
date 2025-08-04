@@ -16,7 +16,7 @@ export default function Blog(props: { href: string, class?: string, key?: any } 
 
       initial={{ opacity: 0, y: 20 }}
       inView={{ opacity: 1, y: 0 }}
-      inViewOptions={{ once: true, amount: 0.8 }}
+      inViewOptions={{ once: true, amount: 0.1 }}
       transition={{ duration: 0.3 }}
     >
       <img

@@ -62,7 +62,7 @@ export default (props: { isDuringTransition: boolean }) => {
         </div>
         {/* Desktop Nav */}
         <div class="items-center sm:flex hidden">
-          <For each={routes}>
+          <For each={routes.filter(e => !e.mobileOnly)}>
             {(route) => (
               <div class="ml-5 w-20 flex items-center justify-center">
                 <A

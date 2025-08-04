@@ -200,7 +200,7 @@ export default () => {
           <Motion.h1 class="font-sans md:text-15 text-10 font-light mt-0 mb-3"
             initial={{ opacity: 0, y: -20 }}
             inView={{ opacity: 1, y: 0 }}
-            inViewOptions={{ amount: 1 }}
+            inViewOptions={{ amount: 1, once: true }}
             transition={{ duration: 0.3 }}
           >
             Concentrations
@@ -208,7 +208,7 @@ export default () => {
           <Motion.p class="ma op-80 font-sans text-2xl m0 md:max-w-unset leading-relaxed max-w-70"
             initial={{ opacity: 0, y: 30 }}
             inView={{ opacity: 0.8, y: 0 }}
-            inViewOptions={{ amount: 1 }}
+            inViewOptions={{ amount: 1, once: true }}
           >
             I am active in the following areas.
             <br />
@@ -219,7 +219,7 @@ export default () => {
         <Motion.div class="blaze-slider sm:pt-30 pt-15 sm:pb-50 pb-30 md:px-5 px-0" id="cards-slider"
           initial={{ opacity: 0, y: 30 }}
           inView={{ opacity: 1, y: 0 }}
-          inViewOptions={{ amount: 0.3 }}
+          inViewOptions={{ amount: 0.3, once: true }}
           transition={{ duration: 0.3 }}
         >
           <div class="blaze-container">

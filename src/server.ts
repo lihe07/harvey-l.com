@@ -5,8 +5,10 @@ import { Blog } from "./config";
 import { query } from "@solidjs/router";
 
 // To be used in Server Components
-export function listBlog() {
-  const blogDir = path.join(process.cwd(), "src", "routes", "blog");
+export function listBlog(blogDir?: string) {
+  blogDir = blogDir || path.join(process.cwd(), "src", "routes", "blog");
+  const hrefPrefix = blogDir.split("src/routes/")[1].split("/")[0];
+
   const blogFiles = fs.readdirSync(blogDir);
 
   const blogMeta = [];
@@ -25,7 +27,7 @@ export function listBlog() {
     blogMeta.push({
       ...meta,
       slug,
-      href: `/blog/${slug}`,
+      href: `/${hrefPrefix}/${slug}`,
       tags: meta.tags,
     } as Blog);
   }
@@ -49,6 +51,15 @@ export const listBlogQuery = query(async () => {
   }
 }, "listBlog");
 
+export const listEnglQuery = query(async () => {
+  if (typeof window === "undefined") {
+    const blogDir = path.join(process.cwd(), "src", "routes", "engl");
+    return listBlog(blogDir);
+  } else {
+    return await (await fetch("/server/listEngl")).json() as Blog[];
+  }
+}, "listEngl");
+
 export const getBlogMetaQuery = query(async (slug: string) => {
   if (typeof window === "undefined") {
     return listBlog().find((e) => e.slug.toLowerCase() === slug.toLowerCase());
@@ -57,3 +68,13 @@ export const getBlogMetaQuery = query(async (slug: string) => {
     return await (await fetch(`/server/meta/${slug}`)).json() as Blog;
   }
 }, "getBlogMeta");
+
+export const getEnglMetaQuery = query(async (slug: string) => {
+  if (typeof window === "undefined") {
+    const blogDir = path.join(process.cwd(), "src", "routes", "engl");
+    return listBlog(blogDir).find((e) => e.slug.toLowerCase() === slug.toLowerCase());
+  }
+  else {
+    return await (await fetch(`/server/meta-engl/${slug}`)).json() as Blog;
+  }
+}, "getEnglMeta");
