@@ -73,9 +73,9 @@ export default function About() {
 
 
               <div class="min-h-50vh">
-                <img src={about} class="md:hidden block rounded-50% w-80% ma mt-35" />
               </div>
               <div class="translate-y--50%">
+                <img src={about} class="md:hidden block rounded-50% w-80% ma mb-15" />
                 <h1 class="text-4xl mb-5">
                   About Me
                 </h1>
@@ -90,7 +90,7 @@ export default function About() {
               >
                 <h2 class="text-xl font-semibold mt-3">A few paragraphs about you:</h2>
 
-                <TypeWriter text={text} intervalTime={5} progress={Math.min(progress(), 1)} />
+                <TypeWriter text={text} progress={Math.min(progress(), 1)} />
 
               </Motion.div>
 
