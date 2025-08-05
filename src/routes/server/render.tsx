@@ -36,7 +36,7 @@ export default () => {
             <a href={e.href}>
               {e.title} - {e.date}
             </a>
-            <a href={`/server/meta/${e.slug}`}>
+            <a href={`/server/meta-eng/${e.slug}`}>
               server meta
             </a>
           </p>
