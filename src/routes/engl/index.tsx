@@ -1,11 +1,11 @@
-import { createEffect, createSignal, For, Show } from "solid-js";
+import { For } from "solid-js";
 import { Title } from "@solidjs/meta";
 import Section from "~/components/Section";
 import PageHead from "~/components/PageHead";
 import BlogCard from "~/components/blog/BlogCard";
 import { createAsync } from "@solidjs/router";
 import { listEnglQuery } from "~/server";
-import cover from "~/assets/images/cover-blog.webp";
+import cover from "~/assets/images/cover-engl.jpg";
 
 export const route = {
   preload: () => listEnglQuery(),
@@ -19,10 +19,9 @@ export default () => {
       <Title>harvey-l.com - ENGL1101</Title>
 
       <PageHead
-        // title={tag() ? "My Blog (filtered)" : "My Blog"}
         title={"English 1101"}
         cover={cover}
-        description={"HELLO"}
+        description={"FYSA@Oxford. Taught by Dr. Jennifer Lux"}
       />
 
       <Section class="my-20">
