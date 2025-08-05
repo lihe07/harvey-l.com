@@ -1,7 +1,7 @@
 import { createEffect, createSignal, For, onMount, Show } from "solid-js";
 import { Motion } from "solid-motionone";
 
-export default function TypeWriter(props: { text: string, intervalTime: number, progress: number }) {
+export default function TypeWriter(props: { text: string, progress: number }) {
   let characters: string[] = []
   for (let i = 0; i < props.text.length; i++) {
     characters.push(props.text[i]);
@@ -78,7 +78,7 @@ export default function TypeWriter(props: { text: string, intervalTime: number, 
 
         <Motion.span
           animate={{ opacity: [1, 0, 0, 1] }}
-          transition={{ duration: 2, repeat: Infinity, delay: characters.length * props.intervalTime / 1000, easing: "linear" }}
+          transition={{ duration: 2, repeat: Infinity, easing: "linear" }}
           class="inline-block w-0.5 h-1em rounded-xl bg-white ml-2 translate-y-1"></Motion.span>
       </p>
     </div>)
