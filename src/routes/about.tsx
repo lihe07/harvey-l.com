@@ -70,11 +70,13 @@ export default function About() {
               }}
             >
 
-
-
               <div class="min-h-50vh">
               </div>
-              <div class="translate-y--50%">
+              <div class="translate-y--50%"
+                style={{
+                  opacity: 1 - progress(),
+                }}
+              >
                 <img src={about} class="md:hidden block rounded-50% w-80% ma mb-15" />
                 <h1 class="text-4xl mb-5">
                   About Me
