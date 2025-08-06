@@ -24,18 +24,30 @@ Me at a desk in the dorm, with a laptop in front of me. I am wearing a casual ou
 
 Inside a library, sitting at a table with books and notes scattered around. I am looking at them and working on a laptop.
 
-### Scene 3. How to Overcome
+### Scene 3
 
 Walking at a crowded street / square in London, with people passing by. I am holding a camera and talking to it.
 
-### Scene 4. Conclusion
+### Scene 4
+
+Close-up shots of texting with friends.
+
+### Scene 5
+
+Various clips of the activities I did in London: jazz club, parliament visit, Hyde park, the Prom etc.
+
+### Scene 6. Conclusion
 
 Back at the dorm, sitting at the desk again. Same as Scene 1.
 
 ## Script
 
-Hi, my name is Harvey, and I am a first-year student majoring in Computer Science at Georgia Tech. I was born and raised in Beijing, and I am currently in London as a part of the First-Year Semester Abroad program. I am excited to take Dr. Jennifer's English 1101 class, about overcoming challenges in my communication skills.
+Hi, my name is Harvey, and I'm a first-year student majoring in Computer Science at Georgia Tech. I'm here in London as part of the First-Year Semester Abroad program. I'm in Dr. Jennifer's English 1101 class, and this video is about my communication challenges
 
-I was always a quiet person, typical of CS students. During my free time, I found myself spending hours at the library, coding and gaming, rather than engaging in conversations with others. This made me realize that I needed to improve my oral communication skills.
+I've always been a quiet person. Like a lot of computer science students, I'm more comfortable with code than I am with conversation.
 
-With the help of Dr. Lux's class, I am determined to overcome this challenge. The diverse environment of London and Oxford will provide me with ample opportunities to practice my communication skills.
+Additionally English not being my first language adds another layer of difficulty. I speak slowly, and sometimes, I just can't find the right words.
+
+But being in London has forced me out of my comfort zone. Every day, I'm in an energetic environment with new cultures and situations. I'm learning to listen more, to read non-verbal cues, or to just be present.
+
+I still have a long way to go, but I feel more confident about overcoming this challenge. I'm learning that communication not only finding the right words, but also trying to connect. And that's a challenge I'm excited to keep working on.
