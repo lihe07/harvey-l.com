@@ -1,8 +1,9 @@
 ```meta
-title: Reading Response: Haircut
+title: "Reading Response: Haircut"
 location: Oxford
 date: 2025-8-11
 tags: [ENGL1101]
+cover: https://lms.d.zhan.com/zhanlms/addon_homework/2025/08/3343149689b1774cffe4/PXL_20250810_164543988.webp
 ```
 
 The part I found to be most interesting in this reading is the author's description of the barber's shop. The line by line comparison between the environment in Sydney and Cincinnati is insightful. The author successfully captures the essential similarities between the two places, while usage of informal works such as "homey" and "welcoming vibe" renders the text more relatable. I was also surprised by abundance of details in description of the shop.
