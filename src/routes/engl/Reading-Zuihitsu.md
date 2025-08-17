@@ -3,7 +3,7 @@ title: "Reading Response: Encountering Zuihitsu"
 location: Oxford
 date: 2025-08-14
 tags: [ENGL1101]
-cover: https://lms.d.zhan.com/zhanlms/addon_homework/2025/08/3343149689b1774cffe4/PXL_20250810_164543988.webp
+cover: https://visit.bodleian.ox.ac.uk/sites/default/files/bodwhatson/images/media/tours-duke-humfreys-library-christopher-judge.jpg
 ```
 
 [Kenko - Essays in Idleness](https://www.tlu.ee/sites/default/files/Instituudid/T%C3%9CHI/%C3%B5ppekavad/Liberal%20Arts%20in%20Humanities%20tekstid/Essays%20in%20Idleness_%20and%20Hojoki%20-%20Kenko.pdf)
