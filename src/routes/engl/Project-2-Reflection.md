@@ -1,6 +1,6 @@
 ```meta
 title: Project 2 - Reflection
-cover: https://lms.d.zhan.com/zhanlms/addon_homework/2025/08/673908068a1d712bc87f/PXL_20250816_112655443.webp
+cover: https://blob.harvey-l.com/2025-08-28_10-12-35_3a5eaa28.webp
 date: 2025-8-25
 location: Oxford
 tags: [ENGL1101]
