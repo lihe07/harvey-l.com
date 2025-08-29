@@ -5,6 +5,7 @@ import Blob from "~/components/about/Blob";
 import TypeWriter from "~/components/about/TypeWriter";
 
 import about from "~/assets/images/about.webp";
+import Challenge from "~/components/engl/Challenge";
 
 
 
@@ -48,66 +49,68 @@ export default function About() {
 
 
   return (
+    <Challenge>
 
-    <main>
-      <Title>harvey-l.com - About</Title>
+      <main>
+        <Title>harvey-l.com - About</Title>
 
 
-      <section class="min-h-300vh">
+        <section class="min-h-300vh">
 
-        <div class="w-full h-screen flex items-center bg-cover justify-center md:flex-row flex-col px-10 sticky top-0"
-          style="background-image: url(https://lms.d.zhan.com/zhanlms/addon_homework/2024/11/1688396730b4a059ec3/kvblurred.webp);"
-          ref={sticky!}
-        >
-          <Blob href={about} class="md:block hidden" />
+          <div class="w-full h-screen flex items-center bg-cover justify-center md:flex-row flex-col px-10 sticky top-0"
+            style="background-image: url(https://lms.d.zhan.com/zhanlms/addon_homework/2024/11/1688396730b4a059ec3/kvblurred.webp);"
+            ref={sticky!}
+          >
+            <Blob href={about} class="md:block hidden" />
 
-          <div class="h-100vh overflow-hidden w-screen max-w-md px-10">
+            <div class="h-100vh overflow-hidden w-screen max-w-md px-10">
 
-            <div class="h-max"
-              ref={scrollContainer!}
-              style={{
-                "transform": `translateY(${-(Math.min(progress() * 1, 1) * scrollContainerHeight())}px)`,
-              }}
-            >
-
-              <div class="min-h-50vh">
-              </div>
-              <div class="translate-y--50%"
+              <div class="h-max"
+                ref={scrollContainer!}
                 style={{
-                  opacity: 1 - progress(),
+                  "transform": `translateY(${-(Math.min(progress() * 1, 1) * scrollContainerHeight())}px)`,
                 }}
               >
-                <img src={about} class="md:hidden block rounded-50% w-80% ma mb-15" />
-                <h1 class="text-4xl mb-5">
-                  About Me
-                </h1>
 
-                <p class="text-lg mb-5 op-70">
-                  Scroll down -&gt;
-                </p>
+                <div class="min-h-50vh">
+                </div>
+                <div class="translate-y--50%"
+                  style={{
+                    opacity: 1 - progress(),
+                  }}
+                >
+                  <img src={about} class="md:hidden block rounded-50% w-80% ma mb-15" />
+                  <h1 class="text-4xl mb-5">
+                    About Me
+                  </h1>
+
+                  <p class="text-lg mb-5 op-70">
+                    Scroll down -&gt;
+                  </p>
+                </div>
+
+                <Motion.div
+                  animate={{ opacity: Math.min(progress() * 3, 1) }}
+                >
+                  <h2 class="text-xl font-semibold mt-3">A few paragraphs about you:</h2>
+
+                  <TypeWriter text={text} progress={Math.min(progress(), 1)} />
+
+                </Motion.div>
+
+
+                <div class="h-30"></div>
+
               </div>
 
-              <Motion.div
-                animate={{ opacity: Math.min(progress() * 3, 1) }}
-              >
-                <h2 class="text-xl font-semibold mt-3">A few paragraphs about you:</h2>
-
-                <TypeWriter text={text} progress={Math.min(progress(), 1)} />
-
-              </Motion.div>
-
-
-              <div class="h-30"></div>
 
             </div>
 
-
           </div>
 
-        </div>
 
-
-      </section>
-    </main>
+        </section>
+      </main>
+    </Challenge>
   )
 }
