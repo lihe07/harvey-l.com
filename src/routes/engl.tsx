@@ -6,6 +6,7 @@ import "~/assets/styles/katex.min.css";
 import { Meta, Title } from "@solidjs/meta";
 import { JSX, Show } from "solid-js";
 import { getEnglMetaQuery } from "~/server";
+import Challenge from "~/components/engl/Challenge";
 
 function BlogLayout(props: { children: JSX.Element }) {
   const location = useLocation();
@@ -35,12 +36,14 @@ export default function Blog(props: { children: JSX.Element }) {
   const location = useLocation();
 
   return (
-    <Show
-      when={location.pathname !== "/engl" && location.pathname !== "/engl/"}
-      fallback={props.children}
-    >
-      <BlogLayout>{props.children}</BlogLayout>
-    </Show>
+    <Challenge>
+      <Show
+        when={location.pathname !== "/engl" && location.pathname !== "/engl/"}
+        fallback={props.children}
+      >
+        <BlogLayout>{props.children}</BlogLayout>
+      </Show>
+    </Challenge>
   );
 }
 
