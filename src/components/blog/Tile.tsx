@@ -1,122 +1,272 @@
-import { createSignal, createEffect, For, JSX } from "solid-js";
-
-export type TileImage = {
-  src: string;
-  alt?: string;
-  caption?: string;
-  width?: number;
-  height?: number;
-};
+import {
+  createSignal,
+  createEffect,
+  For,
+  JSX,
+  onCleanup,
+  onMount,
+  createMemo,
+} from "solid-js";
 
 export type TilePhotographWallProps = {
-  images: TileImage[];
-  rowHeight?: number; // default 220
-  gap?: number;       // default 8
-  rounded?: string;   // tailwind class, e.g. "rounded-2xl"
+  images: string[];          // Can now contain both image and video URLs (.mp4 / .webm)
+  captions?: string[];
+  gap?: number;              // default 8
+  rounded?: string;          // e.g. "rounded-2xl"
+  rowHeight?: number;        // optional: acts as a maximum cap (desktop)
   class?: string;
   style?: JSX.CSSProperties;
+  minRowHeight?: number;     // default 80
+  maxRowHeight?: number;     // default = rowHeight or 480
+  // Optional behavior flags:
+  autoplayVideos?: boolean;  // default true
+  loopVideos?: boolean;      // default true
+  muteVideos?: boolean;      // default true
+  playInlineVideos?: boolean;// default true
+  videoFallbackRatio?: number; // ratio used if metadata fails, default 16/9
 };
 
 export default function TilePhotographWall(props: TilePhotographWallProps) {
-  const rowHeight = () => props.rowHeight ?? 220;
   const gap = () => props.gap ?? 8;
   const rounded = () => props.rounded ?? "rounded-xl";
+  const minRowH = () => props.minRowHeight ?? 80;
+  const maxRowH = () => props.maxRowHeight ?? props.rowHeight ?? 480;
+
+  const autoplayVideos = () => props.autoplayVideos ?? true;
+  const loopVideos = () => props.loopVideos ?? true;
+  const muteVideos = () => props.muteVideos ?? true;
+  const playInlineVideos = () => props.playInlineVideos ?? true;
+  const videoFallbackRatio = () => props.videoFallbackRatio ?? (16 / 9);
 
   const [ratios, setRatios] = createSignal<number[]>([]);
   const [activeIdx, setActiveIdx] = createSignal<number | null>(null);
+  const [containerWidth, setContainerWidth] = createSignal(0);
+  const [isSmallScreen, setIsSmallScreen] = createSignal(false);
 
-  // compute aspect ratios
+  let containerRef: HTMLDivElement | undefined;
+
+  // Helpers
+  const isVideo = (src: string) => /\.(mp4|webm)(\?|#|$)/i.test(src);
+
+  // Observe breakpoint (Tailwind sm = 640px)
+  onMount(() => {
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia("(min-width: 640px)");
+    const update = () => setIsSmallScreen(!mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    onCleanup(() => mql.removeEventListener("change", update));
+  });
+
+  // Listen to resize (simpler than ResizeObserver for now)
   createEffect(() => {
-    const imgs = props.images ?? [];
-    const initial = imgs.map((i) =>
-      i.width && i.height ? i.width / i.height : NaN
-    );
+    if (!containerRef) return;
+    function onResize() {
+      setContainerWidth(containerRef?.clientWidth ?? 0);
+    }
+    onResize();
+    window.addEventListener("resize", onResize);
+    onCleanup(() => window.removeEventListener("resize", onResize));
+  });
 
-    const missing = initial
-      .map((r, i) => (Number.isFinite(r) ? -1 : i))
-      .filter((i) => i >= 0);
-
-    if (missing.length === 0) {
-      setRatios(initial as number[]);
+  // Load aspect ratios (image natural sizes / video metadata)
+  createEffect(() => {
+    const sources = props.images ?? [];
+    if (sources.length === 0) {
+      setRatios([]);
       return;
     }
+    if (typeof window === "undefined") {
+      setRatios(sources.map(() => 1));
+      return;
+    }
+    let cancelled = false;
 
-    const tmp = [...initial];
-    let remaining = missing.length;
-    missing.forEach((i) => {
-      const img = new Image();
-      img.src = props.images[i].src;
-      img.onload = () => {
-        tmp[i] = img.naturalWidth / img.naturalHeight || 1;
-        if (--remaining === 0) setRatios(tmp.map((r) => (isNaN(r) ? 1 : r)));
-      };
-      img.onerror = () => {
-        tmp[i] = 1;
-        if (--remaining === 0) setRatios(tmp.map((r) => (isNaN(r) ? 1 : r)));
-      };
+    Promise.all(
+      sources.map(
+        (src) =>
+          new Promise<number>((resolve) => {
+            if (isVideo(src)) {
+              const video = document.createElement("video");
+              video.preload = "metadata";
+              const cleanUp = () => {
+                video.onloadedmetadata = null;
+                video.onerror = null;
+              };
+              video.onloadedmetadata = () => {
+                const w = video.videoWidth || 1;
+                const h = video.videoHeight || 1;
+                cleanUp();
+                resolve(h ? w / h : videoFallbackRatio());
+              };
+              video.onerror = () => {
+                cleanUp();
+                resolve(videoFallbackRatio());
+              };
+              video.src = src;
+            } else {
+              const img = new Image();
+              img.onload = () => {
+                const w = img.naturalWidth || 1;
+                const h = img.naturalHeight || 1;
+                resolve(h ? w / h : 1);
+              };
+              img.onerror = () => resolve(1);
+              img.src = src;
+            }
+          })
+      )
+    ).then((rs) => {
+      if (!cancelled) setRatios(rs);
     });
 
-    if (missing.length < imgs.length) {
-      setRatios(tmp.map((r) => (isNaN(r) ? 1 : r)));
-    }
+    onCleanup(() => {
+      cancelled = true;
+    });
+  });
+
+  // Auto row height (justified single row desktop)
+  const autoRowHeight = createMemo(() => {
+    if (isSmallScreen()) return 0;
+    const rs = ratios();
+    const n = rs.length;
+    if (n === 0) return 0;
+    const outer = containerWidth();
+    if (outer === 0) return 0;
+    const innerWidth = Math.max(0, outer - gap() * 2);
+    const sumRatios = rs.reduce((a, b) => a + b, 0) || 1;
+    const totalGaps = gap() * (n - 1);
+    const targetHeight = (innerWidth - totalGaps) / sumRatios;
+    const clamped = Math.max(minRowH(), Math.min(targetHeight, maxRowH()));
+    return Math.round(clamped);
   });
 
   const shapeOf = (ratio: number) =>
     ratio > 1.05 ? "landscape" : ratio < 0.95 ? "portrait" : "square";
 
+  const isTouch = () =>
+    typeof window !== "undefined" && matchMedia("(hover: none)").matches;
+
   return (
     <div
-      class={`overflow-x-auto w-full ${props.class ?? ""}`}
+      class={`w-full ${props.class ?? ""}`}
       style={{ ...(props.style ?? {}) }}
+      ref={containerRef}
     >
       <div
-        class="flex flex-row items-stretch"
-        style={{ gap: `${gap()}px`, padding: `${gap()}px` }}
+        class={`flex ${isSmallScreen() ? "flex-col" : "flex-row"} items-stretch`}
+        style={{
+          gap: `${gap()}px`,
+          padding: `${gap()}px`,
+        }}
       >
         <For each={props.images}>
-          {(img, i) => {
-            const r = () => ratios()[i()] ?? 1;
-            const widthPx = () => Math.max(1, Math.round(r() * rowHeight()));
+          {(src, i) => {
+            const ratio = () => ratios()[i()] ?? 1;
+            const caption = () => props.captions?.[i()] ?? "";
             const isActive = () => activeIdx() === i();
+
+            const rowH = () => autoRowHeight();
+            const widthPx = () =>
+              isSmallScreen()
+                ? "100%"
+                : `${Math.max(1, Math.round(ratio() * rowH()))}px`;
+            const heightPx = () =>
+              isSmallScreen()
+                ? (() => {
+                  const w = containerWidth()
+                    ? containerWidth() - gap() * 2
+                    : 0;
+                  if (!w) return "auto";
+                  return `${Math.round(w / ratio())}px`;
+                })()
+                : `${rowH()}px`;
 
             const toggleActive: JSX.EventHandlerUnion<
               HTMLDivElement,
               MouseEvent
             > = () => {
-              if (matchMedia("(hover: none)").matches) {
+              if (isTouch()) {
                 setActiveIdx(isActive() ? null : i());
               }
             };
 
+            const onKeyDown: JSX.EventHandlerUnion<
+              HTMLDivElement,
+              KeyboardEvent
+            > = (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggleActive(e as any);
+              }
+            };
+
+            const videoAttrs = {
+              muted: muteVideos(),
+              autoplay: autoplayVideos(),
+              loop: loopVideos(),
+              playsInline: playInlineVideos(),
+            };
+
             return (
               <div
-                class={`relative flex-shrink-0 overflow-hidden shadow-md bg-gray-100 ${rounded}`}
+                class={`group relative overflow-hidden shadow-md bg-gray-100 cursor-pointer flex-shrink-0 ${rounded()}`}
                 style={{
-                  width: `${widthPx()}px`,
-                  height: `${rowHeight()}px`,
+                  width: widthPx(),
+                  height: heightPx(),
+                  ...(isSmallScreen() ? { width: "100%" } : {}),
                 }}
-                data-shape={shapeOf(r())}
+                data-shape={shapeOf(ratio())}
                 onClick={toggleActive}
+                onKeyDown={onKeyDown}
+                tabIndex={0}
+                aria-label={
+                  caption()
+                    ? `${isVideo(src) ? "Video" : "Photo"}: ${caption()}`
+                    : `${isVideo(src) ? "Video" : "Photo"} ${i() + 1}`
+                }
               >
-                <img
-                  src={img.src}
-                  alt={img.alt ?? img.caption ?? "photo"}
-                  class="w-full h-full object-cover select-none"
-                  width={widthPx()}
-                  height={rowHeight()}
-                  loading="lazy"
-                />
+                {isVideo(src) ? (
+                  <video
+                    src={src}
+                    class="w-full h-full object-cover select-none pointer-events-none m0!"
+                    {...videoAttrs}
+                  />
+                ) : (
+                  <img
+                    src={src}
+                    alt={caption() || `Image ${i() + 1}`}
+                    class="w-full h-full object-cover select-none pointer-events-none m0!"
+                    draggable={false}
+                    loading="lazy"
+                    decoding="async"
+                    width={
+                      isSmallScreen()
+                        ? containerWidth()
+                        : Math.max(1, Math.round(ratio() * rowH()))
+                    }
+                    height={
+                      isSmallScreen()
+                        ? containerWidth()
+                          ? Math.round(
+                            (containerWidth() - gap() * 2) / ratio()
+                          )
+                          : undefined
+                        : rowH()
+                    }
+                  />
+                )}
 
-                {img.caption && (
+                {caption() && (
                   <div
-                    class={`absolute inset-x-0 bottom-0 h-12 flex items-end p-2 
-                      bg-gradient-to-t from-black/60 to-transparent 
-                      transition-all duration-200
+                    class={`absolute inset-x-0 bottom-0 flex items-end p-2
+                      bg-gradient-to-t from-black/60 to-transparent
+                      transition-opacity duration-200
                       ${isActive() ? "opacity-100" : "opacity-0"}
                       group-hover:opacity-100`}
                   >
-                    <span class="text-white text-sm truncate">
-                      {img.caption}
+                    <span class="text-white text-sm truncate w-full">
+                      {caption()}
                     </span>
                   </div>
                 )}
