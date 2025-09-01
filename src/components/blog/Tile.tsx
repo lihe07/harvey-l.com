@@ -265,7 +265,7 @@ export default function TilePhotographWall(props: TilePhotographWallProps) {
                       ${isActive() ? "opacity-100" : "opacity-0"}
                       group-hover:opacity-100`}
                   >
-                    <span class="text-white text-sm truncate w-full">
+                    <span class="text-white text-sm font-sans truncate w-full">
                       {caption()}
                     </span>
                   </div>
