@@ -1,10 +1,8 @@
 pre code.hljs {
   display: block;
   overflow-x: auto;
-  padding: 1em;
 }
 code.hljs {
-  padding: 3px 5px;
 } /*!
   Theme: GitHub Dark
   Description: Dark theme as seen on github.com
@@ -17,7 +15,6 @@ code.hljs {
 */
 .hljs {
   color: #c9d1d9;
-  background: #0d1117;
 }
 .hljs-doctag,
 .hljs-keyword,

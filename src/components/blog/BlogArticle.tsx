@@ -1,9 +1,10 @@
 import Tag from "./Tag";
 import PageHead from "../PageHead";
-import "~/assets/styles/markdown.css";
+import "~/assets/styles/latex.css";
 import { BlogDescription } from "./BlogDescription";
 import { For, JSX } from "solid-js";
 import { Blog } from "~/config";
+import { Link } from "@solidjs/meta";
 
 export default (props: Blog & { children: JSX.Element }) => {
   return (
