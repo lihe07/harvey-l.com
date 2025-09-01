@@ -126,6 +126,23 @@ pre:has(code.language-meta) {
   \parindent =~ 17.625 * (72 / 72.27) / 12 = 1.463rem. */
 }
 
+.markdown-body ul,
+.markdown-body ol {
+  list-style: initial;
+  padding-left: 2em;
+}
+
+.markdown-body ol ol,
+.markdown-body ul ol {
+  list-style-type: lower-roman;
+}
+
+.markdown-body ul ul ol,
+.markdown-body ul ol ol,
+.markdown-body ol ul ol,
+.markdown-body ol ol ol {
+  list-style-type: lower-alpha;
+}
 
 body.libertinus {
   font-family: 'Libertinus', Georgia, Cambria, 'Times New Roman', Times, serif;
@@ -573,6 +590,14 @@ dl dd {
 
 label.sidenote-toggle:not(.sidenote-number) {
   display: none;
+}
+
+blockquote {
+  border-left: 4px solid hsl(0, 0%, 59%);
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 1rem;
+  color: hsl(0, 0%, 70%);
 }
 
 /* sidenotes inside blockquotes are indented more */
