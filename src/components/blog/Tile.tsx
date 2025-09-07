@@ -43,10 +43,10 @@ function FullscreenViewer(props: {
         transition={{ duration: 0.3, easing: "ease-out" }}
       >
         <div
-          class="relative flex flex-col gap-2"
+          class="relative flex flex-col gap-2 justify-center items-center max-w-full max-h-full p-4"
           onClick={(e) => e.stopPropagation()}
         >
-          <div class="relative max-w-[95vw] max-h-[85vh] flex items-center justify-center">
+          <div class="relative max-w-95% max-h-85% flex items-center justify-center min-h-0">
             {props.isVideo ? (
               <video
                 src={props.src}
