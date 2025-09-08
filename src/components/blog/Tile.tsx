@@ -44,9 +44,10 @@ function FullscreenViewer(props: {
       >
         <div
           class="relative flex flex-col gap-2 justify-center items-center max-w-full max-h-full p-4"
-          onClick={(e) => e.stopPropagation()}
         >
-          <div class="relative max-w-95% max-h-85% flex items-center justify-center min-h-0">
+          <div class="relative max-w-95% max-h-85% flex items-center justify-center min-h-0"
+            onClick={(e) => e.stopPropagation()}
+          >
             {props.isVideo ? (
               <video
                 src={props.src}
@@ -65,7 +66,9 @@ function FullscreenViewer(props: {
           </div>
 
           {props.caption && (
-            <div class="text-center text-white/80 text-sm p-2 max-w-full">
+            <div class="text-center text-white/80 text-sm p-2 max-w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
               {props.caption}
             </div>
           )}
