@@ -47,6 +47,10 @@ export default function Challenge(props: { children: any }) {
   }
 
   onMount(() => {
+    // Check if using bypass url
+    if (window.location.search.includes("bypass-challenge=true")) {
+      localStorage.setItem("challenge-solved", "true");
+    }
     // Check the localStorage
     if (localStorage.getItem("challenge-solved") === "true") {
       setLocked(false);
