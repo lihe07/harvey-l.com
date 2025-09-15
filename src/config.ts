@@ -12,6 +12,8 @@ import bg4 from "./assets/images/first/bg1.webp";
 
 
 export const firstBgs = [
+  "https://blob.harvey-l.com/2025-08-31_20-06-06_387ae0ee.webp",
+  "https://blob.harvey-l.com/57c22c5d870fcf3670ed1479204fd299.webp",
   bg1,
   bg2,
   bg3,
