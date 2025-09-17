@@ -94,3 +94,88 @@ const void* ArtMethod::RegisterNative(const void* native_method) {
 From this, we can see that the location of the native method is stored in the `EntryPoint` field of the `ArtMethod` object.
 
 ## Frida Implementation
+
+Below script works for Frida v16.x and v17.x:
+
+```ts
+function getApi(): any {
+  return (Java as any).api
+}
+ 
+class StdString {
+  handle: NativePointer;
+ 
+  constructor() {
+    this.handle = Memory.alloc(3 * Process.pointerSize);
+  }
+ 
+  dispose() {
+    const [data, isTiny] = this._getData();
+    if (!isTiny) {
+      getApi().$delete(data);
+    }
+  }
+ 
+  disposeToString() {
+    const result = this.toString();
+    this.dispose();
+    return result;
+  }
+ 
+  toString() {
+    const str = this.handle;
+    const isTiny = (str.readU8() & 1) === 0;
+    const data = isTiny ? str.add(1) : str.add(2 * Process.pointerSize).readPointer();
+    return data.readUtf8String();
+  }
+ 
+  _getData() {
+    const str = this.handle;
+    const isTiny = (str.readU8() & 1) === 0;
+    const data = isTiny ? str.add(1) : str.add(2 * Process.pointerSize).readPointer();
+    return [data, isTiny];
+  }
+}
+ 
+class ArtMethod {
+  handle: NativePointer;
+ 
+  constructor(handle: NativePointer) {
+    this.handle = handle;
+  }
+ 
+  prettyMethod(withSignature = true) {
+    const result = new StdString();
+    getApi()['art::ArtMethod::PrettyMethod'](result, this.handle, withSignature ? 1 : 0);
+    return result.disposeToString();
+  }
+ 
+  toString() {
+    return `ArtMethod(handle=${this.handle})`;
+  }
+ 
+  methodIdx() {
+    return this.handle.add(12).readU32();
+  }
+ 
+  isNative() {
+    return (this.handle.add(4).readU32() & 0x100) != 0;
+  }
+ 
+  getJniEntry() {
+    return this.handle.add(0x18).readPointer()
+  }
+}
+```
+
+Usage:
+
+```ts
+const MyJni = Java.use("com.xxxx.app.MyJni");
+ 
+const MyArtMethod = new ArtMethod(MyJni.myMethod.handle);
+ 
+console.log(MyArtMethod.prettyMethod(true))
+console.log("isNative:", MyArtMethod.isNative())
+console.log("jniEntry:", MyArtMethod.getJniEntry())
+```
