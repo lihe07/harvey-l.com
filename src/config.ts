@@ -174,10 +174,6 @@ export const routes = [
     path: "/about",
   },
   {
-    name: "ENGL1101",
-    path: "/engl",
-  },
-  {
     name: "Blog",
     path: "/blog",
   },
