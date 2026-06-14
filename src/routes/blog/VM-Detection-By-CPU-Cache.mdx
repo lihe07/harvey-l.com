@@ -1,0 +1,90 @@
+```meta
+title: Detecting Arm64 Virtual Machines By CPU Cache
+date: 2025-07-21
+location: Atlanta
+tags: 
+  - re
+  - tech
+cover: https://lms.d.zhan.com/zhanlms/addon_homework/2025/07/5486275687ed2d770926/small.png
+wideCover: https://lms.d.zhan.com/zhanlms/addon_homework/2025/07/9260415687ed2f761a94/wide.png
+```
+
+## Introduction
+
+VM detection, aka Anti-VM or Anti-Sandbox, is commonly used in mobile software protection to prevevnt reverse engineering and debugging.
+On Android, some widely used methods including:
+
+- checking the ABI list for detecting Android x86
+- locating libhoudini.so
+- checking CPU models, [CPUID](https://www.cyberbit.com/endpoint-security/anti-vm-and-anti-sandbox-explained/)
+
+This post provides a method to detect Arm64 VMs by testing the CPU cache miss rate.
+
+## Basic Idea
+
+The majority of Arm64 VMs are based on QEMU, which is a popular open-source emulator. QEMU's primary focus is on functional emulation and speed, instead of microarchitectural simulation.
+Therefore, by default, QEMU does not accurately emulate CPU cache.
+
+A simple way to detect QEMU is to measure the cache miss rate. From my experiments, real Arm64 devices can achieve **0%** i-cache miss rate on deliberate code. While QEMU consistently reaching **100%** cache miss.
+
+## Implementation
+
+This C implementation tests the instruction cache (often referred as i-cache) miss rate over 100 iterations.
+Compile the code with `aarch64-linux-gnu-gcc` and test with `qemu-aarch64 -L /usr/aarch64-linux-gnu ./main`.
+
+```c
+#include <stdio.h>
+#include <sys/mman.h>
+
+int foo() { return 0; }
+
+int bar() { return 1; }
+
+typedef int (*func_ptr)();
+
+int main(int argc, char *argv[]) {
+  // Alloc RWX
+  func_ptr ptr = mmap(0x0, 0x5000, PROT_READ | PROT_WRITE | PROT_EXEC,
+                      MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+
+  __builtin_memcpy(ptr, foo, 8); // Copy foo
+  __builtin___clear_cache((char *)ptr, (char *)ptr + 8);
+
+  int x = 0;
+  for (int i = 0; i < 100; i++) {
+    x += ptr();
+  }
+
+  __builtin_memcpy(ptr, bar, 8); // Copy bar
+  for (int i = 0; i < 100; i++) {
+    x += ptr();
+  }
+
+  printf("Cache misses: %d out of 100\n", x);
+
+  return 0;
+}
+```
+
+The program first copies `foo` function to a newly mapped RWX memory region. Then iterate 100 times to warm up the cache. After that, it copies `bar` function to the same memory region.
+
+At this point, both emulator and real devices should have memory like this:
+
+```arm
+// @ptr - content of bar
+mov w0, #1
+ret
+```
+
+However, due to CPU cache, real devices will still have the `foo` function in the cache, while QEMU will not. So in the second loop, real devices will execute `foo` 100 times, while QEMU will execute `bar` 100 times.
+
+## Results
+
+On Ampere Altra and Google Pixel 7a, the cache miss rate is 0 out of 100.
+
+On QEMU, Unicorn, Qiling (QEMU based), the cache miss rate is 100 out of 100.
+
+## References
+
+- [CacheModelling](https://wiki.qemu.org/Internships/ProjectIdeas/CacheModelling)
+- [Cache Simulation for Instruction Set Simulator QEMU](https://ieeexplore.ieee.org/document/6945730)
