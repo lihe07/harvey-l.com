@@ -1,0 +1,44 @@
+{
+  "name": "harvey-l-com",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --bun vite dev",
+    "build": "bun --bun vite build",
+    "preview": "bun --bun vite preview",
+    "start": "bun --bun vite preview"
+  },
+  "dependencies": {
+    "@iconify/json": "^2.2.534",
+    "@mdx-js/mdx": "^3.1.1",
+    "@mdx-js/rollup": "^3.1.1",
+    "@solidjs/meta": "^0.29.4",
+    "@solidjs/router": "^1.0.0",
+    "@solidjs/start": "^2.0.5",
+    "@unocss/preset-icons": "^66.10.5",
+    "@unocss/reset": "^66.10.5",
+    "blaze-slider": "^1.9.3",
+    "katex": "^0.18.9",
+    "leaflet": "^1.9.4",
+    "mermaid": "^12.0.0",
+    "nitro": "^3.0.260903-beta",
+    "rehype-external-links": "^3.0.0",
+    "rehype-highlight": "^7.0.2",
+    "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
+    "solid-js": "^1.9.15",
+    "solid-mdx": "^0.0.7",
+    "solid-motionone": "^1.0.4",
+    "unocss": "^66.10.5",
+    "vite": "^8.3.1",
+    "yaml": "^2.9.1"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "version": "0.0.0",
+  "devDependencies": {
+    "@types/leaflet": "^1.9.22",
+    "@unocss/postcss": "^66.10.5"
+  }
+}

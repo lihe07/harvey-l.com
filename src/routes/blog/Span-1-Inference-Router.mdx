@@ -1,0 +1,158 @@
+```meta
+title: Serving 0.88M TPS from Two RTXs and Mac Minis
+date: 2026-09-27
+location: Alameda
+tags:
+  - tech
+  - ai
+cover: /covers/span-1-router.png
+```
+
+import Mermaid from "~/components/blog/Mermaid";
+import SpeedupTable from "~/components/blog/SpeedupTable";
+
+## TL; DR
+
+At [Respan](https://www.respan.ai) we serve [Span-1](https://www.respan.ai/blog/introducing-span-1), a model that scores LLM conversations against natural-language behaviors. It's on our API and [OpenRouter](https://openrouter.ai/respan).
+
+Span-1 processes around **2.2B tokens a day**, peaking at **110 RPS** (about **880k tokens/s**). It runs on **two RTX GPUs and two Mac Minis**.
+
+All batching happens in one central router, similar to [Clockwork](https://www.usenix.org/conference/osdi20/presentation/gujarati) (OSDI 2020). Nodes only run what the router sends them. I wrote the router and the nodes in Rust, with CUDA and Metal kernels.
+
+## The Workload
+
+A request scores one LLM call (a **span**) against several **behaviors**, e.g. "the assistant made up a URL". Each behavior gets a probability.
+
+<Mermaid chart={`
+flowchart LR
+  span --> view[view tokens]
+  behaviors --> branch[branch tokens]
+  view --> req[assembled request]
+  branch --> req
+  req -- pass --> probabilities
+`} />
+
+- No decoding. Scoring is one forward pass.
+- One long view, many short branches. Branches attend to the view but not to each other.
+- Any node can run any request, and a failed pass can be retried.
+
+Span-1 is a hybrid model: most layers are linear attention, a few are softmax attention. So prefill cost is almost linear in view length.
+
+## Architecture
+
+<Mermaid chart={`
+flowchart LR
+  subgraph vpc [private VPC]
+    caller -- HTTP --> assembler -- HTTP --> router
+  end
+  router == QUIC mTLS ==> nodes["nodes (GPUs, Macs, ...)"]
+`} />
+
+- The assembler renders the span into a view, tokenizes it, and wraps each behavior in the scoring template.
+- The router queues, batches and places requests. It only looks at shapes (view length, branch lengths), not token IDs.
+- Nodes connect out to the router, so a Mac on an office network can serve next to a datacenter GPU.
+
+A node is one model on one device. A GPU runs two nodes (one per model) under NVIDIA MPS, which gave **1.27×** combined throughput.
+
+## Batching in the Router
+
+Usually each replica batches its own queue. That doesn't work well when replicas differ by 10× in speed and some traffic has a tight SLO, because no replica sees the whole queue.
+
+Clockwork's idea is that a forward pass of a given shape always takes about the same time. So workers run one pass at a time, a central controller predicts how long each pass takes, and requests that would miss their SLO are dropped early. Our router works the same way. We changed two things.
+
+### Cost Model
+
+Clockwork profiles each batch size. Our views range from 500 to 18,000 tokens with 1 to hundreds of branches, so instead each node fits a three-term cost model:
+
+$$
+t_{\text{pass}} = t_{\text{fixed}} + \text{rows}\cdot c_{\text{row}} + \text{pairs}\cdot c_{\text{pair}}
+$$
+
+$$
+\text{pairs} = \sum_{r \in \text{pass}} \left( \frac{v_r(v_r+1)}{2} + b_r\, v_r \right)
+$$
+
+$v_r$ is the view length and $b_r$ the number of branch rows.
+
+Nodes benchmark themselves before joining and report the three constants. Measured pass times keep updating them. To the router, a GPU and a Mac are just two cost curves.
+
+With these predictions the router knows when each node will be free, and keeps just enough work queued on each node to cover network time.
+
+### SLO Classes
+
+Each request has a class: priority, latency target and optional deadline.
+
+- If a request is predicted to miss, the caller gets `429` with `Retry-After` right away.
+- A pass is sent when it's full, when the node is about to run dry, or when a request in it can't wait longer.
+- Passes are capped by the tightest urgent target, since they can't be preempted.
+- Low-priority requests only join a pass if they don't delay higher-priority ones.
+
+### Mixed Hardware
+
+A node's forecast only counts passes it already holds, so a fast GPU always looks almost free and an idle Mac never gets work. The fix is to also count the queue ahead of each request. Then the Macs get the work the GPUs would have reached too late.
+
+## Kernels
+
+Most of the gains came from one day of kernel work, on an older pair of GPUs (real spans, 8 behaviors, 4 callers):
+
+- pro: 23.0 → **58.7 req/s**, p99 0.83 s → 0.41 s
+- lite: 40.8 → **129.0 req/s**, p99 4.7 s → 0.35 s
+
+What helped, roughly in order:
+
+**Scheduler bug.** The router was putting small requests ahead of big ones on busy nodes, and the big ones starved. Fixing it took p99 at 64 clients from 11.4 s to 1.8 s.
+
+**Tensor cores for linear attention.** Linear attention is computed in 64-token chunks, each needing a few 64×64 matrix ops. I moved them to tf32 `mma.sync` (split 3×tf32 for accuracy). 3.7–7× faster depending on the card.
+
+**One scan per pass.** One scan covers every view in a pass, in three launches, instead of one scan per view. 3.03 ms → 1.50 ms per layer at 7,400 tokens.
+
+**Shared branch passes.** A pass scores the branches of all its requests in one packed forward, with the small kernels fused. The router also lets low-priority work on a busy node wait up to 100 ms so more requests share a pass. A four-request pass went from 22.3 ms to 14.9 ms.
+
+## Long Requests
+
+Some customers send hundreds of behaviors against one conversation. Such a request might not fit in memory, and it would hold a node for a long time.
+
+Since branches only attend to their own view, we can split the branches into shards, each with the full view, and run them on different nodes. This is the one place the router reads token IDs.
+
+Every shard would recompute the view, so CUDA nodes cache recent views (the linear-attention state plus the K/V of the softmax layers). The router sends shards to the node that has their view. On 349 real requests split into 4 shards on one GPU, this took 13.9 s vs 30.8 s unsplit. Without the cache it would have taken 3.4× as long.
+
+## Apple Silicon
+
+The Mac node uses Candle's Metal matmuls plus our own Metal kernels for the scan and attention, in bf16 with f32 state. It's much slower than a GPU but costs almost nothing to run, so it takes the less urgent work.
+
+## All the Speed-ups
+
+<SpeedupTable
+  groups={[
+    {
+      group: "Scheduling",
+      rows: [
+        { technique: "Stop starving big requests", measured: "p99 latency, 64 clients", before: "11.4 s", after: "1.8 s", gain: "6.3×" },
+        { technique: "Shared branch passes", measured: "four-request pro pass", before: "22.3 ms", after: "14.9 ms", gain: "1.5×" },
+      ],
+    },
+    {
+      group: "Kernels",
+      rows: [
+        { technique: "Linear attention on tensor cores", measured: "the chunk kernel, per card", gain: "3.7–7×" },
+        { technique: "Whole-pass scan in three launches", measured: "one layer, 7,400 tokens", before: "3.03 ms", after: "1.50 ms", gain: "2.0×" },
+      ],
+    },
+    {
+      group: "Serving",
+      rows: [
+        { technique: "Two models with MPS", measured: "combined throughput, both busy", gain: "1.27×" },
+        { technique: "Split long requests into shards", measured: "349 real requests, 4 shards, one GPU", before: "30.8 s", after: "13.9 s", gain: "2.2×" },
+        { technique: "Keep recent views cached", measured: "vs. recomputing the view per shard", gain: "3.4×" },
+      ],
+    },
+    {
+      group: "End to end (on single GPU)",
+      rows: [
+        { technique: "pro", measured: "8 behaviors, 4 callers", before: "23.0 RPS", after: "58.7 RPS", gain: "2.6×" },
+        { technique: "lite", measured: "8 behaviors, 4 callers", before: "40.8 RPS", after: "129.0 RPS", gain: "3.2×" },
+      ],
+    },
+  ]}
+  caption="Each gain is measured on something different, from one kernel to p99 across the router, so they neither add up nor compare directly."
+/>
