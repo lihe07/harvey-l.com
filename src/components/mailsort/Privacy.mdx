@@ -1,0 +1,55 @@
+_Last updated: October 17, 2026_
+
+Span-02 Email Sorter ("mailsort") is a personal, self-hosted tool run by Harvey Li. It sorts the
+operator's own Gmail and Outlook mail into labels using Respan's Span-02 model. It is not offered
+to the public.
+
+## What data it accesses
+
+When you authorize it with Google, mailsort requests the `gmail.modify` scope and uses it only to:
+
+- read new messages in your Inbox and Spam folders: the sender, recipients, subject, date,
+  `Authentication-Results` and `List-Unsubscribe` headers, and the message body;
+- add and remove labels it manages (for example `AI/Receipts`), creating those labels if needed;
+- move a message between Inbox and Spam when it is confident the message was misfiled.
+
+It does not send, delete or forward email, does not read attachments, and does not access
+contacts, calendar or any other Google data.
+
+## How data is used and shared
+
+For each new message, mailsort sends the fields listed above to the
+[Respan](https://respan.ai) Span-02 API, with the body shortened to a few thousand characters
+and long links reduced to their domain. Span-02 returns a category and probabilities, which
+mailsort uses to choose labels. Respan processes this data to answer the request and keeps a
+log of each call under the operator's Respan account.
+
+Data is not sold, used for advertising, or shared with anyone else. It is not used to train
+models.
+
+## What is stored
+
+On the server that runs mailsort, the following are kept:
+
+- the OAuth token for your account;
+- a sync position, so it only processes new mail;
+- a log of each decision: message ID, sender, subject, the labels applied, the model's
+  probabilities, and the model's response.
+
+The server is administered only by the operator. Message bodies are not stored by mailsort.
+
+## Your choices
+
+You can revoke access at any time at
+[myaccount.google.com/permissions](https://myaccount.google.com/permissions). To have the stored
+tokens and decision log deleted, email the address below; they are deleted within 30 days.
+
+## Google API Services User Data Policy
+
+Span-02 Email Sorter's use and transfer of information received from Google APIs adheres to the
+[Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy),
+including the Limited Use requirements.
+
+## Contact
+
+[harvey-l@gatech.edu](mailto:harvey-l@gatech.edu)

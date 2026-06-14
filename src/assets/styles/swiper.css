@@ -1,0 +1,38 @@
+.blaze-pagination {
+  gap:14px
+}
+.blaze-pagination {
+  display:flex;
+  gap:14px;
+  justify-content:center
+}
+.blaze-pagination button {
+  background: #ffffff26;
+  border: none;
+  border-radius:50%;
+  color: rgba(255,255,255,0);
+  font-size: 0;
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
+  outline: 0;
+  transition:transform .2s,background .3s
+}
+.blaze-pagination button.active {
+  background-color:white;
+  border-color:white;
+  transform:scale(1.2)
+}
+.blaze-slider.end .blaze-next,
+.blaze-slider.start .blaze-prev {
+  opacity:.1
+}
+.blaze-next,
+.blaze-prev {
+  background:none;
+  border:none;
+  cursor:pointer;
+  outline:0;
+  padding:0
+}
+
